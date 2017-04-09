@@ -1,0 +1,1 @@
+start runemacs.exe --load=startup.el --load=clojure_startup.el
