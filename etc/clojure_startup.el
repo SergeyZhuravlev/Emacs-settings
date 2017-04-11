@@ -5,8 +5,13 @@
 
 ;clojure environment:
 (defvar lein-project-directory "~")
-(defvar lein-executer "lein.bat ")
-;(defvar lein-path-delimiter "//")
+(defvar lein-executer 
+   (cond 
+		((equal system-type "windows-nt") "lein.bat " )
+		((equal system-type "gnu/linux") "lein " )
+		(t "lein ")
+	)
+)
 ;(defvar lein-project-name "hello-world")
 ;(defvar lein-template "default")
 
