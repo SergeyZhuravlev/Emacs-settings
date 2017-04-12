@@ -56,7 +56,7 @@
   (interactive)
   (let ((default-directory lein-project-directory))
     (read-lein-directory)
-    (read-string (concat "Directory '" lein-project-directory "'. Press RET for project creation in it subdirectory"))
+    (read-string (concat "Directory '" lein-project-directory "'. Press RET for project creation in this subdirectory"))
     (if (file-exists-p lein-project-directory) nil (make-directory lein-project-directory))
     (read-lein-template)
     (read-lein-project-name)
@@ -87,7 +87,7 @@
 (defun lein-view-project-directory ()
   (interactive)
   (let ((default-directory lein-project-directory))
-    (error "dired unimplemented")))
+    (dired (list "Current Lein project directory" lein-project-directory))))
 
 (defun lein-interactive-repl-project ()
   (interactive)
