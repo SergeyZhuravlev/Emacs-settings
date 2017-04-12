@@ -28,6 +28,12 @@
 (defun read-lein-template ()
   (setq lein-template (read-string-not-whitespace "Lein template name (default - for library; app - for application)" "default" "lein template name")))
 
+(defun lein-project-file-path ()
+  (path-concat lein-project-directory lein-project-file))
+
+(defun check-opened-project ()
+  (unless (file-exists-p (lein-project-file-path)) (error (concat "Not found project file at '" lein-project-directory "'"))))
+
 
 					;clojure commands:
 (defun lein-help ()
@@ -43,38 +49,40 @@
   (interactive)
   (let ((default-directory lein-project-directory))
     (read-lein-directory)
+    (check-opened-project)
     (load-lein-project-name)))
 
 (defun lein-new-project ()
   (interactive)
-  (let ((default-directory lein-project-directory)) (update-lein-directory)
-       (read-string (concat "Directory '" lein-project-directory "'. Press RET"))
-       (if (file-exists-p lein-project-directory) nil (make-directory lein-project-directory))
-       (read-lein-template)
-       (read-lein-project-name)
-       (let ((default-directory lein-project-directory))
-	 (shell-command 
-	  (concat lein-executer "new " lein-template " " lein-project-name ))
-	 (setq lein-project-directory (path-concat lein-project-directory lein-project-name)))))
+  (let ((default-directory lein-project-directory))
+    (read-lein-directory)
+    (read-string (concat "Directory '" lein-project-directory "'. Press RET for project creation in it subdirectory"))
+    (if (file-exists-p lein-project-directory) nil (make-directory lein-project-directory))
+    (read-lein-template)
+    (read-lein-project-name)
+    (let ((default-directory lein-project-directory))
+      (shell-command 
+       (concat lein-executer "new " lein-template " " lein-project-name ))
+      (setq lein-project-directory (path-concat lein-project-directory lein-project-name)))))
 
 (defun lein-full-compile-project ()
   (interactive)
   (let ((default-directory lein-project-directory))
+    (check-opened-project)
     (shell-command 
      (concat lein-executer " clean && " lein-executer " deps && " lein-executer " compile && " lein-executer " uberjar"))))
 
 (defun lein-run-project ()
   (interactive)
   (let ((default-directory lein-project-directory))
+    (check-opened-project)
     (shell-command 
      (concat lein-executer " run"))))
 
 (defun lein-project-edit ()
   (interactive)
-  (let ((file_path (path-concat lein-project-directory lein-project-file)))
-    (if (file-exists-p file_path)
-	(find-file file_path)
-      (error "Not opened project"))))
+  (check-opened-project)
+  (find-file (lein-project-file-path)))
 
 (defun lein-view-project-directory ()
   (interactive)
@@ -85,6 +93,7 @@
   (interactive)
   (error "unimplemented")
   (let ((default-directory lein-project-directory))
+    (check-opened-project)
     (shell-command 
      (concat lein-executer " repl"))))
 
