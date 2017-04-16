@@ -1,1 +1,1 @@
-start runemacs --load=%APPDATA%\.emacs.d\ide-conf\etc\startup.el
+start runemacs --load=%APPDATA%\.emacs.d\ide-conf\etc\startup.el %1
