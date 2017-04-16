@@ -4,16 +4,12 @@
 
 					;clojure environment:
 (defvar lein-project-directory "~")
-
-(defvar lein-executer 
-  (cond 
-   ((equal system-type "windows-nt") "lein.bat " )
-   ((equal system-type "gnu/linux") "lein " )
-   (t "lein ")))
-
+(defvar lein-executer "lein ")
+(defvar java-executer "java ")
 (defvar lein-project-file "project.clj")
 (defvar lein-project-name nil)
 (defvar lein-project-version nil)
+(defvar lein-target-directory-name "target/uberjar")
 
 
 					;clojure tools:
@@ -26,7 +22,7 @@
 
 (defun load-lein-project-configuration ()
   (let ((project_text (get-string-from-file (lein-project-file-path))))
-    (let ((match_result (string-match "[ \t\n]*([ \t\n]*defproject[ \t\n]+\\([-._0-9a-zA-Z]+\\)[ \t\n]*\"\\([-._0-9a-zA-Z]+\\)\"" project_text)))
+    (let ((match_result (string-match "[ \t\n]*([ \t\n]*defproject[ \t\n]+\\([-._0-9a-zA-Z]+\\)[ \t\n]*\"\\([- ._0-9a-zA-Z]+\\)\"" project_text)))
       (if match_result
 	  (progn
 	    (setq lein-project-name (match-string 1 project_text))
@@ -89,12 +85,12 @@
     (shell-command 
      (concat lein-executer " run"))))
 
-;(defun lein-execute-project ()
-;  (interactive)
-;  (let ((default-directory lein-project-directory))
-;    (check-opened-project)
-;    (shell-command 
-;     (concat lein-executer " run"))))
+(defun lein-execute-project ()
+  (interactive)
+  (let ((default-directory (path-concat lein-project-directory lein-target-directory-name)))
+    (check-opened-project)
+    (shell-command 
+     (concat java-executer " -jar " lein-project-name "-" lein-project-version "-standalone.jar"))))
 
 (defun lein-project-edit ()
   (interactive)
@@ -118,6 +114,9 @@
 					;clojure menu:
 (make-main-menu clojure 'tools)
 (make-menu clojure lein-interactive-repl-project "M-[ i")
+(make-menu clojure lein-async-execute-project "M-[ a e")
+(make-menu clojure lein-async-run-project "M-[ a r")
+(make-menu clojure lein-execute-project "M-[ e")
 (make-menu clojure lein-run-project "M-[ r")
 (make-menu clojure lein-full-compile-project "M-[ f")
 (make-menu clojure lein-project-edit "M-[ p")
