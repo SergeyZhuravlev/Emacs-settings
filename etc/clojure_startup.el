@@ -10,6 +10,12 @@
 (defvar lein-project-name nil)
 (defvar lein-project-version nil)
 (defvar lein-target-directory-name "target/uberjar")
+(defvar async-executer-suffix "&")
+(defvar new-env-executer 
+  (cond 
+   ((string-equal system-type "windows-nt") "start " )
+   ((string-equal system-type "gnu/linux") "xterm -e " )
+   (t "")))
 
 
 					;clojure tools:
@@ -78,19 +84,41 @@
     (shell-command 
      (concat lein-executer " clean && " lein-executer " deps && " lein-executer " compile && " lein-executer " uberjar"))))
 
-(defun lein-run-project ()
-  (interactive)
+(defun lein-run-project-generic (prefix suffix)
   (let ((default-directory lein-project-directory))
     (check-opened-project)
     (shell-command 
-     (concat lein-executer " run"))))
+     (concat prefix lein-executer " run " suffix))))
 
-(defun lein-execute-project ()
-  (interactive)
+(defun java-execute-project-generic (prefix suffix)
   (let ((default-directory (path-concat lein-project-directory lein-target-directory-name)))
     (check-opened-project)
     (shell-command 
-     (concat java-executer " -jar " lein-project-name "-" lein-project-version "-standalone.jar"))))
+     (concat prefix java-executer " -jar " lein-project-name "-" lein-project-version "-standalone.jar " suffix))))
+
+(defun lein-run-project ()
+  (interactive)
+  (lein-run-project-generic "" ""))
+
+(defun java-execute-project ()
+  (interactive)
+  (java-execute-project-generic "" ""))
+
+(defun lein-async-run-project ()
+  (interactive)
+  (lein-run-project-generic "" async-executer-suffix))
+
+(defun java-async-execute-project ()
+  (interactive)
+  (java-execute-project-generic "" async-executer-suffix))
+
+(defun lein-new-environment-run-project ()
+  (interactive)
+  (lein-run-project-generic new-env-executer async-executer-suffix))
+
+(defun java-new-environment-execute-project ()
+  (interactive)
+  (java-execute-project-generic new-env-executer async-executer-suffix))
 
 (defun lein-project-edit ()
   (interactive)
@@ -114,9 +142,11 @@
 					;clojure menu:
 (make-main-menu clojure 'tools)
 (make-menu clojure lein-interactive-repl-project "M-[ i")
-(make-menu clojure lein-async-execute-project "M-[ a e")
+(make-menu clojure java-new-environment-execute-project "M-[ b e")
+(make-menu clojure lein-new-environment-run-project "M-[ b r")
+(make-menu clojure java-async-execute-project "M-[ a e")
 (make-menu clojure lein-async-run-project "M-[ a r")
-(make-menu clojure lein-execute-project "M-[ e")
+(make-menu clojure java-execute-project "M-[ e")
 (make-menu clojure lein-run-project "M-[ r")
 (make-menu clojure lein-full-compile-project "M-[ f")
 (make-menu clojure lein-project-edit "M-[ p")
