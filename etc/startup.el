@@ -74,3 +74,11 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa-STABLE" . "http://stable.melpa.org/packages/"))
 
+(package-initialize)
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+(unless (package-installed-p 'rainbow-delimiters)
+  (package-install 'rainbow-delimiters))
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
