@@ -130,18 +130,14 @@
   (let ((default-directory lein-project-directory))
     (dired (list "Current Lein project directory" lein-project-directory))))
 
-(defun lein-interactive-repl-project ()
+(defun lein-interactive-repl-current-file ()
   (interactive)
-  (error "unimplemented")
-  (let ((default-directory lein-project-directory))
-    (check-opened-project)
-    (shell-command 
-     (concat lein-executer " repl"))))
+  (cider-jack-in))
 
 
 					;clojure menu:
 (make-main-menu my-clojure 'tools)
-(make-menu my-clojure lein-interactive-repl-project "M-[ i")
+(make-menu my-clojure lein-interactive-repl-current-file "M-[ i")
 (make-menu my-clojure java-new-environment-execute-project "M-[ b e")
 (make-menu my-clojure lein-new-environment-run-project "M-[ b r")
 (make-menu my-clojure java-async-execute-project "M-[ a e")
