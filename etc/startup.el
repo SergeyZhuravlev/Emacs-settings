@@ -69,3 +69,8 @@
   (with-temp-buffer
     (insert-file-contents filePath)
     (buffer-string)))
+
+					;settings
+(require 'package)
+(add-to-list 'package-archives '("melpa-STABLE" . "http://stable.melpa.org/packages/"))
+
