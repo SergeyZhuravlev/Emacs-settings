@@ -76,14 +76,6 @@
       (setq lein-project-directory (path-concat lein-project-directory lein-project-name))
       (load-lein-project-configuration))))
 
-(defun lein-full-compile-project ()
-  (interactive)
-  (let ((default-directory lein-project-directory))
-    (check-opened-project)
-    (load-lein-project-configuration)
-    (shell-command 
-     (concat lein-executer " clean && " lein-executer " deps && " lein-executer " compile && " lein-executer " uberjar"))))
-
 (defun lein-run-project-generic (prefix suffix)
   (let ((default-directory lein-project-directory))
     (check-opened-project)
@@ -95,14 +87,6 @@
     (check-opened-project)
     (shell-command 
      (concat prefix java-executer " -jar " lein-project-name "-" lein-project-version "-standalone.jar " suffix))))
-
-(defun lein-run-project ()
-  (interactive)
-  (lein-run-project-generic "" ""))
-
-(defun java-execute-project ()
-  (interactive)
-  (java-execute-project-generic "" ""))
 
 (defun lein-async-run-project ()
   (interactive)
@@ -130,28 +114,37 @@
   (let ((default-directory lein-project-directory))
     (dired (list "Current Lein project directory" lein-project-directory))))
 
+(autoload 'cider-connected-p "cider-client")
+(autoload 'cider-restart "cider-interaction")
+
+(defun lein-full-compile-project ()
+  (interactive)
+  (let ((default-directory lein-project-directory))
+    (check-opened-project)
+    (load-lein-project-configuration)
+    (shell-command 
+     (concat lein-executer " clean && " lein-executer " deps && " lein-executer " compile && " lein-executer " uberjar"))
+    (if (cider-connected-p)(cider-restart t))))
+
 (defun lein-interactive-repl-current-file ()
   (interactive)
   (cider-jack-in))
 
-
-					;clojure menu:
-(make-main-menu my-clojure 'tools)
-(make-menu my-clojure lein-interactive-repl-current-file "M-[ i")
-(make-menu my-clojure java-new-environment-execute-project "M-[ b e")
-(make-menu my-clojure lein-new-environment-run-project "M-[ b r")
-(make-menu my-clojure java-async-execute-project "M-[ a e")
-(make-menu my-clojure lein-async-run-project "M-[ a r")
-(make-menu my-clojure java-execute-project "M-[ e")
-(make-menu my-clojure lein-run-project "M-[ r")
-(make-menu my-clojure lein-full-compile-project "M-[ f")
-(make-menu my-clojure lein-project-edit "M-[ p")
-(make-menu my-clojure lein-view-project-directory "M-[ v")
-(make-menu my-clojure lein-new-project "M-[ n")
-(make-menu my-clojure lein-set-project-directory "M-[ d")
-(make-menu my-clojure lein-execute-command "M-[ l")
-(make-menu my-clojure lein-help "M-[ h")
-
-					;settings
+					;settings:
 (unless (package-installed-p 'cider)
   (package-install 'cider))
+
+					;clojure menu:
+(make-main-menu lein-clojure 'tools)
+(make-menu lein-clojure lein-interactive-repl-current-file "M-[ i")
+(make-menu lein-clojure java-new-environment-execute-project "M-[ e")
+(make-menu lein-clojure lein-new-environment-run-project "M-[ r")
+(make-menu lein-clojure java-async-execute-project "M-[ a e")
+(make-menu lein-clojure lein-async-run-project "M-[ a r")
+(make-menu lein-clojure lein-full-compile-project "M-[ f")
+(make-menu lein-clojure lein-project-edit "M-[ p")
+(make-menu lein-clojure lein-view-project-directory "M-[ v")
+(make-menu lein-clojure lein-new-project "M-[ n")
+(make-menu lein-clojure lein-set-project-directory "M-[ d")
+(make-menu lein-clojure lein-execute-command "M-[ l")
+(make-menu lein-clojure lein-help "M-[ h")
