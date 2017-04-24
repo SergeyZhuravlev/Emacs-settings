@@ -11,6 +11,7 @@
 (defvar lein-project-version nil)
 (defvar lein-target-directory-name "target/uberjar")
 (defvar async-executer-suffix "&")
+(defvar lein-application-command-line "")
 (defvar new-env-executer 
   (cond 
    ((string-equal system-type "windows-nt") "start " )
@@ -80,13 +81,13 @@
   (let ((default-directory lein-project-directory))
     (check-opened-project)
     (shell-command 
-     (concat prefix lein-executer " run " suffix))))
+     (concat prefix lein-executer " run " lein-application-command-line suffix))))
 
 (defun java-execute-project-generic (prefix suffix)
   (let ((default-directory (path-concat lein-project-directory lein-target-directory-name)))
     (check-opened-project)
     (shell-command 
-     (concat prefix java-executer " -jar " lein-project-name "-" lein-project-version "-standalone.jar " suffix))))
+     (concat prefix java-executer " -jar " lein-project-name "-" lein-project-version "-standalone.jar " lein-application-command-line suffix))))
 
 (defun lein-async-run-project ()
   (interactive)
