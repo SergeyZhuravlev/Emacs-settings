@@ -1,8 +1,8 @@
-					;usings:
+					;usings
 (require 'subr-x)
 
 
-					;clojure environment:
+					;clojure environment
 (defvar lein-project-directory "~")
 (defvar lein-executer "lein ")
 (defvar java-executer "java ")
@@ -19,7 +19,7 @@
    (t "")))
 
 
-					;clojure tools:
+					;clojure tools
 (defun read-lein-directory ()
   (setq lein-project-directory (read-directory-name "Lein project directory: "))
   (message "Lein project directory is %s" lein-project-directory))
@@ -46,7 +46,7 @@
   (unless (file-exists-p (lein-project-file-path)) (error (concat "Not found project file at '" lein-project-directory "'"))))
 
 
-					;clojure commands:
+					;clojure commands
 (defun lein-help ()
   (interactive)
   (shell-command (concat lein-executer "help " (read-string "Input Lein params for help or RET: "))))
@@ -131,17 +131,17 @@
   (interactive)
   (cider-jack-in))
 
-					;settings:
+					;settings
 (unless (package-installed-p 'cider)
   (package-install 'cider))
 
-					;clojure menu:
+					;clojure menu
 (make-main-menu lein-clojure 'tools)
 (make-menu lein-clojure lein-interactive-repl-current-file "M-[ i")
-(make-menu lein-clojure java-new-environment-execute-project "M-[ e")
-(make-menu lein-clojure lein-new-environment-run-project "M-[ r")
-(make-menu lein-clojure java-async-execute-project "M-[ a e")
-(make-menu lein-clojure lein-async-run-project "M-[ a r")
+(make-menu lein-clojure java-new-environment-execute-project "M-[ e n")
+(make-menu lein-clojure lein-new-environment-run-project "M-[ r n")
+(make-menu lein-clojure java-async-execute-project "M-[ e a")
+(make-menu lein-clojure lein-async-run-project "M-[ r a")
 (make-menu lein-clojure lein-full-compile-project "M-[ f")
 (make-menu lein-clojure lein-project-edit "M-[ p")
 (make-menu lein-clojure lein-view-project-directory "M-[ v")

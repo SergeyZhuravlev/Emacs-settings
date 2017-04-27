@@ -1,14 +1,14 @@
-					;usings:
+					;usings
 (require 'cl)
 
 
-					;common:
+					;common
 (defmacro comment (&rest body)
   "Comment out one or more s-expressions."
   nil)
 
 
-					;symbols:
+					;symbols
 (defun replace-char (string replaced-char char-replacer) 
   (concat 
    (mapcar 
@@ -32,7 +32,7 @@
   `(make-symbol (upper-first (symbol-name ,symbol))))
 
 
-					;emacs-menus:
+					;emacs-menus
 (defmacro symbol-to-menu (symbol)
   `(list* (symbol-to-text ,symbol) ,symbol))
 
@@ -45,7 +45,7 @@
      (global-set-key (kbd ,key_binding) ',command)))
 
 
-					;interactive:
+					;interactive
 (defun read-string-not-whitespace (prompt &optional default_input parameter_name)
   (let ((default_input (if default_input default_input ""))
 	(readed (string-trim (read-string (concat prompt ": ") default_input)))
@@ -81,4 +81,20 @@
 (unless (package-installed-p 'rainbow-delimiters)
   (package-install 'rainbow-delimiters))
 
+					;settings params
+(custom-set-faces
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "dark orange"))))
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "deep pink"))))
+ '(rainbow-delimiters-depth-3-face ((t (:foreground "chartreuse"))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "deep sky blue"))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "yellow"))))
+ '(rainbow-delimiters-depth-6-face ((t (:foreground "orchid"))))
+ '(rainbow-delimiters-depth-7-face ((t (:foreground "spring green"))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "sienna1")))))
+
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(show-paren-mode 1)
+(setq show-paren-delay 0)
+
+;(current-language-environment "Russian")
