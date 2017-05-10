@@ -20,9 +20,10 @@
 
 
 					;clojure tools
-(defun read-lein-directory ()
-  (setq lein-project-directory (read-directory-name "Lein project directory: "))
-  (message "Lein project directory is %s" lein-project-directory))
+(defun read-lein-directory (&optional info)
+  (let ((info (if (not info) "Lein project directory: " info)))
+    (setq lein-project-directory (read-directory-name info))
+    (message "%s '%s'" info lein-project-directory)))
 
 (defun read-lein-project-name ()
   (setq lein-project-name (read-string-not-whitespace "Lein project name")))
@@ -66,16 +67,17 @@
 (defun lein-new-project ()
   (interactive)
   (let ((default-directory lein-project-directory))
-    (read-lein-directory)
-    (read-string (concat "Directory '" lein-project-directory "'. Press RET for project creation in this subdirectory"))
+    (read-lein-directory "Directory for create lein project directory within: ")
     (read-lein-project-name)
-    (read-lein-template)
-    (if (file-exists-p lein-project-directory) nil (make-directory lein-project-directory))
-    (let ((default-directory lein-project-directory))
-      (shell-command 
-       (concat lein-executer "new " lein-template " " lein-project-name ))
-      (setq lein-project-directory (path-concat lein-project-directory lein-project-name))
-      (load-lein-project-configuration))))
+    (let ((lein-project-full-directory (path-concat lein-project-directory lein-project-name)))
+      (read-string (concat "Press RET for create project in directory '" lein-project-full-directory "'. Directory must not exist."))
+      (read-lein-template)
+      (if (file-exists-p lein-project-directory) nil (make-directory lein-project-directory))
+      (let ((default-directory lein-project-directory))
+        (shell-command 
+         (concat lein-executer "new " lein-template " " lein-project-name ))
+         (setq lein-project-directory lein-project-full-directory)
+        (load-lein-project-configuration)))))
 
 (defun lein-run-project-generic (prefix suffix)
   (let ((default-directory lein-project-directory))
@@ -145,7 +147,7 @@
 (make-menu lein-clojure lein-full-compile-project "M-[ f")
 (make-menu lein-clojure lein-project-edit "M-[ p")
 (make-menu lein-clojure lein-view-project-directory "M-[ v")
-(make-menu lein-clojure lein-new-project "M-[ n")
 (make-menu lein-clojure lein-set-project-directory "M-[ d")
+(make-menu lein-clojure lein-new-project "M-[ n")
 (make-menu lein-clojure lein-execute-command "M-[ l")
 (make-menu lein-clojure lein-help "M-[ h")
