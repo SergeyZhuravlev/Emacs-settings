@@ -129,6 +129,24 @@
      (concat lein-executer " clean && " lein-executer " deps && " lein-executer " compile && " lein-executer " uberjar"))
     (if (cider-connected-p)(cider-restart t))))
 
+(defun lein-compile-project ()
+  (interactive)
+  (let ((default-directory lein-project-directory))
+    (check-opened-project)
+    (load-lein-project-configuration)
+    (shell-command 
+     (concat lein-executer " compile && " lein-executer " uberjar"))
+    (if (cider-connected-p)(cider-restart t))))
+
+(defun lein-dependencies-project ()
+  (interactive)
+  (let ((default-directory lein-project-directory))
+    (check-opened-project)
+    (load-lein-project-configuration)
+    (shell-command 
+     (concat lein-executer " deps"))
+    (if (cider-connected-p)(cider-restart t))))
+
 (defun lein-clean-project ()
   (interactive)
   (let ((default-directory lein-project-directory))
@@ -153,6 +171,8 @@
 (make-menu lein-clojure java-async-execute-project "M-[ e a")
 (make-menu lein-clojure lein-async-run-project "M-[ r a")
 (make-menu lein-clojure lein-clean-project "M-[ c")
+(make-menu lein-clojure lein-dependencies-project "M-[ r")
+(make-menu lein-clojure lein-compile-project "M-[ a")
 (make-menu lein-clojure lein-full-compile-project "M-[ f")
 (make-menu lein-clojure lein-project-edit "M-[ p")
 (make-menu lein-clojure lein-view-project-directory "M-[ v")
