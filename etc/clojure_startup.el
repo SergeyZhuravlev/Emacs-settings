@@ -97,12 +97,12 @@
 
 (defun java-async-execute-project ()
   (interactive)
-  (message "Use Ctrl+c Ctrl+c for ordinary shutdown application")
+  (message "Press Ctrl+c Ctrl+c in application console tile for ordinary shutdown started application")
   (java-execute-project-generic "" async-executer-suffix))
 
 (defun lein-new-environment-run-project ()
   (interactive)
-  (message "Use Ctrl+c Ctrl+c for ordinary shutdown application")
+  (message "Press Ctrl+c Ctrl+c in application console tile for ordinary shutdown started application")
   (lein-run-project-generic new-env-executer async-executer-suffix))
 
 (defun java-new-environment-execute-project ()
